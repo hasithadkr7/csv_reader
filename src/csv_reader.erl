@@ -32,15 +32,25 @@ get_all_lines(Device, Lines) ->
       end
   end.
 
-%%%{"amount" => "5000", "name" => "John Doy", "national_id" => "123456789", "phone_number" => "+97142244224"}
-
 format_line(Line) ->
   case string:split(Line, ",", all) of
     [NationalId, Name, PhoneNumber, Amount] ->
-      #{<<"amount">> => list_to_binary(string:strip(Amount, both, $\n)),
-        <<"name">> => list_to_binary(string:strip(Name, both, $\n)),
-        <<"national_id">> => list_to_binary(string:strip(NationalId, both, $\n)),
-        <<"phone_number">> => list_to_binary(string:strip(PhoneNumber, both, $\n))};
+      try
+        #{<<"amount">> => format_value(Amount),
+          <<"name">> => format_value(Name),
+          <<"national_id">> => format_value(NationalId),
+          <<"phone_number">> => format_value(PhoneNumber)}
+      catch
+        Exception:Reason ->
+           io:format("csv_reader|format_line|Exception:~p~n", [Exception]),
+           io:format("csv_reader|format_line|Reason:~p~n", [Reason]),
+           io:format("csv_reader|format_line|Line:~p~n", [Line]),
+           []
+      end;
     _ ->
       []
   end.
+
+format_value(Value) ->
+  Value1 = string:strip(string:chomp(Value), both),
+  unicode:characters_to_binary(Value1).

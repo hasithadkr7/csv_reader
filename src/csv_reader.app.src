@@ -1,6 +1,6 @@
 {application, csv_reader,
- [{description, "An OTP library"},
-  {vsn, "0.1.0"},
+ [{description, "An CSV file parsing library"},
+  {vsn, "1.0.1"},
   {registered, []},
   {applications,
    [kernel,
